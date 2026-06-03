@@ -1,0 +1,9 @@
+node_modules/
+.vercel/
+*.log
+audit.js
+split.js
+split2.js
+original_backup.html
+.env
+package-lock.json

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Dashboard · Al Aziziya Turizm</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Montserrat:wght@300;400;600;700;800&display=swap" media="print" onload="this.media='all'">
+<style>
+:root{
+  --y:#FFD600;--b:#5BC8F5;--bk:#05070D;--bk2:#080C14;--bk3:#0C1220;
+  --w:#fff;--g:rgba(255,255,255,.05);--border:rgba(255,255,255,.08);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bk);color:var(--w);font-family:"Montserrat",sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* ── LOGIN SCREEN ── */
+#login-screen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:20px;
+  background:radial-gradient(ellipse at 30% 40%,rgba(91,200,245,.06) 0%,transparent 60%),
+             radial-gradient(ellipse at 70% 70%,rgba(255,214,0,.04) 0%,transparent 50%),
+             var(--bk);
+}
+.login-card{
+  background:rgba(255,255,255,.025);border:1px solid var(--border);
+  border-radius:24px;padding:52px 44px;width:100%;max-width:420px;
+  backdrop-filter:blur(24px);box-shadow:0 32px 80px rgba(0,0,0,.6);
+  animation:loginSlide .5s ease;
+}
+@keyframes loginSlide{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.login-logo{text-align:center;margin-bottom:32px;}
+.login-logo img{width:72px;height:72px;object-fit:contain;background:#fff;border-radius:50%;padding:4px;box-shadow:0 0 28px rgba(91,200,245,.25);}
+.login-logo h2{font-family:"Playfair Display",serif;font-size:22px;font-weight:700;margin-top:14px;}
+.login-logo p{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+.login-field{margin-bottom:18px;}
+.login-field label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:7px;}
+.login-field input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--w);font-size:14px;font-family:"Montserrat",sans-serif;outline:none;transition:border-color .3s;}
+.login-field input:focus{border-color:var(--b);background:rgba(91,200,245,.04);}
+.login-btn{width:100%;background:var(--y);color:var(--bk);border:none;border-radius:48px;padding:15px;font-weight:800;font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;font-family:"Montserrat",sans-serif;margin-top:6px;}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(255,214,0,.3);}
+.login-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.login-error{color:#ff6b6b;font-size:12px;margin-top:10px;display:none;text-align:center;}
+.login-hint{margin-top:20px;padding:12px 16px;background:rgba(91,200,245,.04);border:1px solid rgba(91,200,245,.1);border-radius:10px;font-size:11px;color:rgba(255,255,255,.35);text-align:center;line-height:1.6;}
+
+/* ── DASHBOARD ── */
+#dashboard{display:none;}
+
+.dash-header{
+  background:rgba(5,7,13,.97);border-bottom:1px solid var(--border);
+  padding:14px 32px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);
+}
+.dash-brand{display:flex;align-items:center;gap:12px;}
+.dash-brand img{width:36px;height:36px;object-fit:contain;background:#fff;border-radius:50%;padding:2px;}
+.dash-brand-name{font-family:"Playfair Display",serif;font-size:15px;font-weight:700;}
+.dash-brand-name em{font-style:normal;color:var(--b);}
+.dash-badge{background:rgba(255,214,0,.1);border:1px solid rgba(255,214,0,.25);color:var(--y);font-size:9px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1.5px;text-transform:uppercase;margin-left:8px;}
+.dash-actions{display:flex;align-items:center;gap:10px;}
+.btn-sm{padding:8px 16px;border-radius:10px;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;border:none;font-family:"Montserrat",sans-serif;transition:all .25s;}
+.btn-refresh{background:rgba(91,200,245,.1);border:1px solid rgba(91,200,245,.2);color:var(--b);}
+.btn-refresh:hover{background:rgba(91,200,245,.18);}
+.btn-export{background:rgba(255,214,0,.1);border:1px solid rgba(255,214,0,.2);color:var(--y);}
+.btn-export:hover{background:rgba(255,214,0,.18);}
+.btn-logout{background:rgba(255,255,255,.05);border:1px solid var(--border);color:rgba(255,255,255,.5);}
+.btn-logout:hover{border-color:rgba(255,100,100,.3);color:#ff6b6b;}
+
+.dash-body{max-width:1400px;margin:0 auto;padding:32px 24px;}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+.stat-card{background:var(--g);border:1px solid var(--border);border-radius:16px;padding:20px 22px;transition:border-color .3s;}
+.stat-card:hover{border-color:rgba(91,200,245,.2);}
+.stat-eye{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px;}
+.stat-num{font-family:"Playfair Display",serif;font-size:32px;font-weight:700;color:var(--y);}
+.stat-label{font-size:11px;color:rgba(255,255,255,.35);margin-top:3px;}
+
+/* ── CONTROLS ── */
+.controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.search-wrap{position:relative;flex:1;min-width:200px;}
+.search-wrap input{width:100%;background:var(--g);border:1px solid var(--border);border-radius:12px;padding:11px 16px 11px 40px;color:var(--w);font-size:13px;font-family:"Montserrat",sans-serif;outline:none;transition:border-color .3s;}
+.search-wrap input:focus{border-color:var(--b);}
+.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;opacity:.4;}
+.filter-sel{background:var(--g);border:1px solid var(--border);border-radius:12px;padding:11px 16px;color:var(--w);font-size:12px;font-family:"Montserrat",sans-serif;outline:none;cursor:pointer;min-width:160px;}
+.filter-sel:focus{border-color:var(--b);}
+.filter-sel option{background:var(--bk3);}
+
+/* ── TABLE ── */
+.table-wrap{background:var(--g);border:1px solid var(--border);border-radius:18px;overflow:hidden;}
+.inq-table{width:100%;border-collapse:collapse;font-size:12px;}
+.inq-table thead tr{background:rgba(255,255,255,.03);border-bottom:1px solid var(--border);}
+.inq-table th{padding:13px 14px;text-align:left;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);white-space:nowrap;}
+.inq-table tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .2s;}
+.inq-table tbody tr:last-child{border-bottom:none;}
+.inq-table tbody tr:hover{background:rgba(91,200,245,.03);}
+.inq-table td{padding:12px 14px;vertical-align:top;color:rgba(255,255,255,.78);}
+.svc-badge{display:inline-block;background:rgba(91,200,245,.08);border:1px solid rgba(91,200,245,.15);color:var(--b);padding:2px 9px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;}
+.notes-cell{max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(255,255,255,.4);}
+.date-cell{white-space:nowrap;color:rgba(255,255,255,.35);font-size:11px;}
+.empty-row td,.loading-row td{text-align:center;padding:40px;color:rgba(255,255,255,.25);font-size:13px;}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--b);border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Footer ── */
+.dash-footer{text-align:center;padding:24px;font-size:10px;color:rgba(255,255,255,.15);letter-spacing:1px;margin-top:16px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .dash-header{padding:12px 16px;}
+  .dash-body{padding:20px 14px;}
+  .dash-badge{display:none;}
+  .inq-table th:nth-child(7),.inq-table td:nth-child(7),
+  .inq-table th:nth-child(8),.inq-table td:nth-child(8),
+  .inq-table th:nth-child(9),.inq-table td:nth-child(9){display:none;}
+}
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .controls{flex-direction:column;}
+  .filter-sel,.search-wrap{width:100%;}
+  .inq-table th:nth-child(6),.inq-table td:nth-child(6),
+  .inq-table th:nth-child(10),.inq-table td:nth-child(10){display:none;}
+  .login-card{padding:32px 22px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ LOGIN SCREEN ══════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23FFD600'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='28' font-family='serif' fill='%23000'%3E✈%3C/text%3E%3C/svg%3E" alt="Al Aziziya Turizm">
+      <h2>AL AZİZİYA <em>TURİZM</em></h2>
+      <p>Admin Dashboard</p>
+    </div>
+    <form id="login-form">
+      <div class="login-field">
+        <label for="admin-pass">Admin Password</label>
+        <input type="password" id="admin-pass" placeholder="Enter your admin password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="login-btn">Login</button>
+      <div id="login-error" class="login-error"></div>
+    </form>
+    <div class="login-hint">
+      🔐 This portal is restricted to authorized staff only.<br>
+      Set your <code>ADMIN_PASSWORD</code> in Vercel environment variables.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ DASHBOARD ══════════════════ -->
+<div id="dashboard">
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="dash-brand">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23FFD600'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='28' font-family='serif' fill='%23000'%3E✈%3C/text%3E%3C/svg%3E" alt="Logo">
+      <div>
+        <span class="dash-brand-name">AL AZİZİYA <em>TURİZM</em></span>
+        <span class="dash-badge">Admin</span>
+      </div>
+    </div>
+    <div class="dash-actions">
+      <button class="btn-sm btn-refresh" id="refresh-btn">↻ Refresh</button>
+      <button class="btn-sm btn-export" id="export-btn">⬇ Export CSV</button>
+      <button class="btn-sm btn-logout" id="logout-btn">Logout</button>
+    </div>
+  </header>
+
+  <div class="dash-body">
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-eye">Total</div>
+        <div class="stat-num" id="total-count">—</div>
+        <div class="stat-label">Inquiries Received</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-eye">Today</div>
+        <div class="stat-num" id="today-count">—</div>
+        <div class="stat-label">New Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-eye">Top Service</div>
+        <div class="stat-num" style="font-size:18px;padding-top:6px;" id="top-service">—</div>
+        <div class="stat-label">Most Requested</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-eye">Top Market</div>
+        <div class="stat-num" style="font-size:18px;padding-top:6px;" id="top-nat">—</div>
+        <div class="stat-label">Most Active Nationality</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search by name, phone, destination…">
+      </div>
+      <select class="filter-sel" id="filter-service">
+        <option value="">All Services</option>
+      </select>
+      <select class="filter-sel" id="filter-nat">
+        <option value="">All Nationalities</option>
+      </select>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table class="inq-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Nationality</th>
+            <th>Service</th>
+            <th>Destination</th>
+            <th>Travel Dates</th>
+            <th>Adults</th>
+            <th>Notes</th>
+            <th>Language</th>
+            <th>Submitted</th>
+          </tr>
+        </thead>
+        <tbody id="inq-tbody">
+          <tr id="loading-row" class="loading-row" style="display:none;">
+            <td colspan="11"><span class="spinner"></span> Loading inquiries…</td>
+          </tr>
+          <tr id="empty-row" class="empty-row" style="display:none;">
+            <td colspan="11">📭 No inquiries found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="dash-footer">Al Aziziya Turizm Admin Portal · Data stored securely in MongoDB</div>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>
