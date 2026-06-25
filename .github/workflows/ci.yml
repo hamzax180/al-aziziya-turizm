@@ -1,0 +1,100 @@
+name: 🔍 CI — Lint & Validate
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ─────────────────────────────────────────────
+  # JOB 1: HTML Validation
+  # ─────────────────────────────────────────────
+  html-validate:
+    name: 📄 Validate HTML
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install html-validate
+        run: npm install -g html-validate
+
+      - name: ✅ Validate HTML files
+        run: |
+          echo "Validating HTML files..."
+          for file in *.html; do
+            echo "→ Checking $file"
+            html-validate "$file" || true
+          done
+
+  # ─────────────────────────────────────────────
+  # JOB 2: Dead Link Check
+  # ─────────────────────────────────────────────
+  link-check:
+    name: 🔗 Check Links
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔗 Run link checker on HTML files
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >
+            --verbose
+            --no-progress
+            --accept 200,201,204,301,302,403,429
+            --exclude-mail
+            --exclude "localhost"
+            --exclude "127.0.0.1"
+            '*.html'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+  # ─────────────────────────────────────────────
+  # JOB 3: Security — Secret Scan
+  # ─────────────────────────────────────────────
+  secret-scan:
+    name: 🔐 Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🕵️ Scan for secrets with Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+  # ─────────────────────────────────────────────
+  # JOB 4: File Size Audit
+  # ─────────────────────────────────────────────
+  size-audit:
+    name: 📊 File Size Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📏 Report file sizes
+        run: |
+          echo "## 📊 File Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+          for f in *.html css/*.css js/*.js; do
+            [ -f "$f" ] && echo "| $f | $(du -sh "$f" | cut -f1) |" >> $GITHUB_STEP_SUMMARY
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Total repo size:** $(du -sh . --exclude=.git | cut -f1)" >> $GITHUB_STEP_SUMMARY
